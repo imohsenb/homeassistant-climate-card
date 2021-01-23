@@ -37,8 +37,11 @@ class ClimateDisplay extends LitElement {
               hvacMode=${this.hvacMode}
               hvacAction=${this.hvacAction}
             ></climate-display-status>
-            <div class="climate-card-data ccd-humidity">${this.humidity != "undefined"?html`${this.humidity}%`:""}</div>
+            <div class="climate-card-data ccd-humidity">${this.humidity != "undefined"?html`
+            <ha-icon icon="mdi:water-percent" style="--mdc-icon-size: 16px; height: 16px; width: 16px; vertical-align: text-top;"></ha-icon>${this.humidity}%
+            `:""}</div>
             <climate-picker
+              hvacMode=${this.hvacMode}
               targetTemp=${this.targetTemp}
               .tempRange=${this.tempRange}
               .onUpdateTargetTemp=${(temp) => this.onUpdateTargetTemp(temp)}
