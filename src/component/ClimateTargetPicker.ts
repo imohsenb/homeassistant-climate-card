@@ -1,9 +1,11 @@
 import { LitElement, html, css, property, internalProperty } from 'lit-element';
-import { ClimateTempRange } from '../climate/ClimateDeviceManager';
+import { ClimateTempRange, HVAC_MODE } from '../climate/ClimateDeviceManager';
 
 class Picker extends LitElement {
   @property()
   public targetTemp = 0;
+  @property()
+  public hvacMode = HVAC_MODE.OFF;
   @property()
   public tempRange!: ClimateTempRange;
   @property({ type: Function })
@@ -19,6 +21,12 @@ class Picker extends LitElement {
 
   render() {
     return html`
+      <div id="circle">
+        <div id="picker" class="hvac-${this.hvacMode}" style="transform: rotate(150deg);">
+          <div id="picker-circle"></div>
+          <div id="picker-value">${this.selectedTargetTemp}</div>
+        </div>
+      </div>
       <svg class="climate-card-deg" viewBox="0 0 120 120">
         <path
           stroke-width="1"
@@ -28,12 +36,6 @@ class Picker extends LitElement {
           d="M60 4 a 52 52 0 0 1 0 115 a 52 52 0 0 1 0 -115"
         />
       </svg>
-      <div id="circle">
-        <div id="picker" style="transform: rotate(150deg);">
-          <div id="picker-circle"></div>
-          <div id="picker-value">${this.selectedTargetTemp}</div>
-        </div>
-      </div>
     `;
   }
 
@@ -191,9 +193,13 @@ class Picker extends LitElement {
         transform-origin: center left;
       }
 
+      #picker.hvac-off {
+        display: none
+      }
+
       #picker-circle {
-        width: 6px;
-        height: 6px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         background: rgb(154 40 40);
         margin: 0px 3px 0px auto;
@@ -218,8 +224,8 @@ class Picker extends LitElement {
 
       #picker-value {
         position: absolute;
-        right: 11px;
-        top: -6px;
+        right: 16px;
+        top: -3px;
         font-size: 10px;
         font-family: 'Roboto';
         transform: rotate(80deg);
