@@ -1,31 +1,33 @@
-import resolve from "rollup-plugin-node-resolve";
-import typescript from "rollup-plugin-typescript2";
-import babel from "rollup-plugin-babel";
-import serve from "rollup-plugin-serve";
-import { terser } from "rollup-plugin-terser";
+import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
+import terser from '@rollup/plugin-terser';
+import typescript from '@rollup/plugin-typescript';
+import serve from 'rollup-plugin-serve';
 
 export default {
-  input: ["src/climate-card.ts"],
+  input: ['src/climate-card.ts'],
   output: {
-    dir: "./dist",
-    format: "es",
+    file: 'dist/climate-card.js',
+    format: 'es',
   },
   plugins: [
-    resolve(),
-    typescript(),
     json(),
-    babel({
-      exclude: "node_modules/**",
+    resolve({
+      browser: true,
+    }),
+    commonjs(),
+    typescript({
+      tsconfig: './tsconfig.json',
     }),
     terser(),
     serve({
-      contentBase: "./dist",
-      host: "0.0.0.0",
+      contentBase: './dist',
+      host: '0.0.0.0',
       port: 5000,
       allowCrossOrigin: true,
       headers: {
-        "Access-Control-Allow-Origin": "*",
+        'Access-Control-Allow-Origin': '*',
       },
     }),
   ],

@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit-element';
+import { html } from 'lit';
 
 
 const cardTheme = html`

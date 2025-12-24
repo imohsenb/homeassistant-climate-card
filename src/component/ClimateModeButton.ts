@@ -1,4 +1,5 @@
-import { LitElement, html, css, property } from 'lit-element';
+import { LitElement, css, html } from 'lit';
+import { property } from 'lit/decorators.js';
 import { HVAC_MODE } from '../climate/ClimateDeviceManager';
 
 class ClimateModeButton extends LitElement {
@@ -8,8 +9,8 @@ class ClimateModeButton extends LitElement {
   public isActive = false;
   @property({ type: String })
   public activeColor = '';
-  @property({ type: Function })
-  public onClick;
+  @property({ attribute: false })
+  public onClick?: (mode: HVAC_MODE) => void;
   @property()
   public mode: HVAC_MODE = HVAC_MODE.OFF;
 

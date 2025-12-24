@@ -1,5 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { HassEntity } from 'home-assistant-js-websocket';
+import type { HassEntity } from 'home-assistant-js-websocket';
 import CardConfig from './CardConfig';
 
 export enum DOMAINS {

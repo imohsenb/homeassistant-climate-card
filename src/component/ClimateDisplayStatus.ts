@@ -1,4 +1,5 @@
-import { LitElement, html, css, property } from 'lit-element';
+import { LitElement, css, html } from 'lit';
+import { property } from 'lit/decorators.js';
 import { HVAC_ACTION, HVAC_MODE } from '../climate/ClimateDeviceManager';
 
 class ClimateDisplayStatus extends LitElement {

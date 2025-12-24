@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "ES2022",
     "module": "esnext",
     "moduleResolution": "node",
+    "useDefineForClassFields": false,
     "lib": [
-      "es2017",
+      "ES2022",
       "dom",
       "dom.iterable"
     ],
@@ -16,6 +17,9 @@
     "noImplicitAny": false,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "experimentalDecorators": true
-  }
+    "experimentalDecorators": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "rollup.config*.js"],
+  "exclude": ["dist", "node_modules"]
 }
