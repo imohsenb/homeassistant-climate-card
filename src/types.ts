@@ -15,6 +15,10 @@ export interface ClimateCardConfig extends LovelaceCardConfig {
   show_error?: boolean;
   test_gui?: boolean;
   entity?: string;
+  grid_options?: {
+    columns?: number;
+    rows?: number;
+  };
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;

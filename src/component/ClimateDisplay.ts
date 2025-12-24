@@ -142,7 +142,8 @@ class ClimateDisplay extends LitElement {
           }
           
           .climate-card-data.ccd-temp {
-            top: 40%;
+            top: 50%;
+            transform: translateY(-50%);
             margin: auto;
             color: rgb(204 204 204);
             width: 100%;

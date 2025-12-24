@@ -21,7 +21,9 @@ abstract class DeviceManager<T extends CardConfig> {
 
     this.hass = hass;
     this.config = config;
-    this.entity = hass.states[config.entity];
+    const entity = hass.states[config.entity];
+    if (!entity) return false;
+    this.entity = entity;
 
     this.onInitialzied();
 

@@ -38,8 +38,27 @@ export class ClimateCard extends LitElement {
     return document.createElement('climate-card-editor');
   }
 
-  public static getStubConfig(): object {
-    return {};
+  // Home Assistant will call this when adding the card from the UI.
+  // We try to prefill a climate entity if one is available.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public static getStubConfig(hass?: HomeAssistant, entities?: string[]): any {
+    const fromEntities = entities?.find((eid) => eid.startsWith('climate.'));
+    const fromStates = hass ? Object.keys(hass.states).find((eid) => eid.startsWith('climate.')) : undefined;
+    const entity = fromEntities ?? fromStates;
+    return {
+      ...(entity ? { entity } : {}),
+      grid_options: {
+        columns: 9,
+        rows: 5,
+      },
+    };
+  }
+
+  public getGridOptions(): { columns: number; rows: number } {
+    return {
+      columns: this.config?.grid_options?.columns ?? 9,
+      rows: this.config?.grid_options?.rows ?? 5,
+    };
   }
 
   @state() private config!: ClimateCardConfig;
@@ -75,6 +94,9 @@ export class ClimateCard extends LitElement {
   }
 
   protected render(): TemplateResult | void {
+    if (!this.hass) {
+      return html``;
+    }
 
     if (this.config.show_warning) {
       return this._showWarning(localize('common.show_warning'));
@@ -84,7 +106,14 @@ export class ClimateCard extends LitElement {
       return this._showError(localize('common.show_error'));
     }
 
-    this.deviceManger.initialize(this.hass, this.config);
+    if (!this.config.entity) {
+      return this._showError('Missing required option: entity');
+    }
+
+    const initialized = this.deviceManger.initialize(this.hass, this.config);
+    if (!initialized) {
+      return this._showError(`Entity not found: ${this.config.entity}`);
+    }
 
     return html`
       ${cardTheme}
