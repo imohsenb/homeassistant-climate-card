@@ -1,25 +1,26 @@
-import { LitElement, html, css, property } from 'lit-element';
-import './ClimateTargetPicker'
-import './ClimateDisplayStatus'
+import { LitElement, css, html } from 'lit';
+import { property } from 'lit/decorators.js';
+import './ClimateTargetPicker';
+import './ClimateDisplayStatus';
 
 class ClimateDisplay extends LitElement {
 
     @property()
-    public name = ""
+    public name = '';
     @property()
-    public currentTemp = ""
+    public currentTemp: string | number = '';
     @property()
-    public humidity = ""
+    public humidity: string | number | undefined;
     @property()
-    public targetTemp
+    public targetTemp: number | undefined;
+    @property({ attribute: false })
+    public tempRange: any;
     @property()
-    public tempRange
+    public hvacMode: any;
     @property()
-    public hvacMode
-    @property()
-    public hvacAction
-    @property({ type: Function })
-    public onUpdateTargetTemp;
+    public hvacAction: any;
+    @property({ attribute: false })
+    public onUpdateTargetTemp?: (temp: number) => void;
 
     constructor() {
         super()
@@ -34,17 +35,17 @@ class ClimateDisplay extends LitElement {
             <div class="climate-card-data ccd-name">${this.name}</div>
             <div class="climate-card-data ccd-temp">${this.currentTemp}<div class="ccd-deg">°</div></div>
             <climate-display-status
-              hvacMode=${this.hvacMode}
-              hvacAction=${this.hvacAction}
+              .hvacMode=${this.hvacMode}
+              .hvacAction=${this.hvacAction}
             ></climate-display-status>
-            <div class="climate-card-data ccd-humidity">${this.humidity != "undefined"?html`
+            <div class="climate-card-data ccd-humidity">${this.humidity !== undefined && this.humidity !== null && this.humidity !== '' ? html`
             <ha-icon icon="mdi:water-percent" style="--mdc-icon-size: 16px; height: 16px; width: 16px; vertical-align: text-top;"></ha-icon>${this.humidity}%
-            `:""}</div>
+            ` : ""}</div>
             <climate-picker
-              hvacMode=${this.hvacMode}
-              targetTemp=${this.targetTemp}
+              .hvacMode=${this.hvacMode}
+              .targetTemp=${this.targetTemp ?? 0}
               .tempRange=${this.tempRange}
-              .onUpdateTargetTemp=${(temp) => this.onUpdateTargetTemp(temp)}
+              .onUpdateTargetTemp=${(temp: number) => this.onUpdateTargetTemp?.(temp)}
               ></climate-picker>
           </div>
         </div>

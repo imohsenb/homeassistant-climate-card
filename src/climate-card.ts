@@ -1,16 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import cardTheme from './styles'
-import {
-  LitElement,
-  html,
-  customElement,
-  property,
-  CSSResult,
-  TemplateResult,
-  css,
-  PropertyValues,
-  internalProperty,
-} from 'lit-element';
+import cardTheme from './styles';
+import { LitElement, css, html, type CSSResult, type PropertyValues, type TemplateResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import {
   HomeAssistant,
   hasConfigOrEntityChanged,
@@ -22,10 +13,10 @@ import './component/ClimateDisplay'
 import './editor';
 
 import type { ClimateCardConfig } from './types';
-import { CARD_VERSION} from './const';
+import { CARD_VERSION } from './const';
 import { localize } from './localize/localize';
-import ClimateDeviceManager from './climate/ClimateDeviceManager'
-import {CLIMATE_ATTRS} from './climate/ClimateDeviceManager'
+import ClimateDeviceManager from './climate/ClimateDeviceManager';
+import { CLIMATE_ATTRS } from './climate/ClimateDeviceManager';
 
 /* eslint no-console: 0 */
 console.info(
@@ -51,8 +42,8 @@ export class ClimateCard extends LitElement {
     return {};
   }
 
-  @internalProperty() private config!: ClimateCardConfig;
-  @property() public hass!: HomeAssistant;
+  @state() private config!: ClimateCardConfig;
+  @property({ attribute: false }) public hass!: HomeAssistant;
 
   private deviceManger = new ClimateDeviceManager();
 
@@ -62,7 +53,11 @@ export class ClimateCard extends LitElement {
     }
 
     if (config.test_gui) {
-      getLovelace().setEditMode(true);
+      try {
+        getLovelace().setEditMode(true);
+      } catch {
+        // ignore
+      }
     }
 
     this.config = {
@@ -89,21 +84,21 @@ export class ClimateCard extends LitElement {
       return this._showError(localize('common.show_error'));
     }
 
-    this.deviceManger.initialize(this.hass, this.config)
+    this.deviceManger.initialize(this.hass, this.config);
 
     return html`
       ${cardTheme}
       <ha-card>
         <div class="climate-card">
           <climate-display
-            name = ${this.deviceManger.getAttr(CLIMATE_ATTRS.NAME)}
-            currentTemp = ${this.deviceManger.getAttr(CLIMATE_ATTRS.CURRENT_TEMPERATUE)}
-            targetTemp=${this.deviceManger.getAttr(CLIMATE_ATTRS.TEMPERATUE)}
+            .name=${this.deviceManger.getAttr(CLIMATE_ATTRS.NAME)}
+            .currentTemp=${this.deviceManger.getAttr(CLIMATE_ATTRS.CURRENT_TEMPERATUE)}
+            .targetTemp=${this.deviceManger.getAttr(CLIMATE_ATTRS.TEMPERATUE)}
             .tempRange=${this.deviceManger.temperatureRange()}
-            humidity = ${this.deviceManger.getAttr(CLIMATE_ATTRS.CURRENT_HUMIDITY)}
-            hvacMode=${this.deviceManger.getState()}
-            hvacAction=${this.deviceManger.getAttr(CLIMATE_ATTRS.HVAC_ACTION)}
-            .onUpdateTargetTemp=${(temp)=>this.deviceManger.setTargetTemp(temp)}
+            .humidity=${this.deviceManger.getAttr(CLIMATE_ATTRS.CURRENT_HUMIDITY)}
+            .hvacMode=${this.deviceManger.getState()}
+            .hvacAction=${this.deviceManger.getAttr(CLIMATE_ATTRS.HVAC_ACTION)}
+            .onUpdateTargetTemp=${(temp: number) => this.deviceManger.setTargetTemp(temp)}
           ></climate-display>
           <div class="climate-card-controls">
           ${
@@ -111,7 +106,7 @@ export class ClimateCard extends LitElement {
               return html`<climate-mode-button 
               mode=${hvacMode}
               ?isActive=${this.deviceManger.isMode(hvacMode)} 
-              .onClick=${(mode)=>this.deviceManger.hvacMode(mode)}
+              .onClick=${(mode: any) => this.deviceManger.hvacMode(mode)}
             ></climate-mode-button>`
             })
           }

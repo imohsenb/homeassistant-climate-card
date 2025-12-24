@@ -1,4 +1,5 @@
-import { LitElement, html, css, property, internalProperty } from 'lit-element';
+import { LitElement, css, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
 import { ClimateTempRange, HVAC_MODE } from '../climate/ClimateDeviceManager';
 
 class Picker extends LitElement {
@@ -8,12 +9,12 @@ class Picker extends LitElement {
   public hvacMode = HVAC_MODE.OFF;
   @property()
   public tempRange!: ClimateTempRange;
-  @property({ type: Function })
-  public onUpdateTargetTemp;
-  @internalProperty()
+  @property({ attribute: false })
+  public onUpdateTargetTemp?: (temp: number) => void;
+  @state()
   private selectedTargetTemp = 0;
   private picker!: Element | null | undefined;
-  private updateTimer!: NodeJS.Timeout;
+  private updateTimer?: ReturnType<typeof window.setTimeout>;
 
   constructor() {
     super();
@@ -81,7 +82,7 @@ class Picker extends LitElement {
   }
 
   private updateDeviceTargetTemp() {
-    this.onUpdateTargetTemp(this.selectedTargetTemp)
+    this.onUpdateTargetTemp?.(this.selectedTargetTemp);
   }
 
   private updateTargetTemp(deg): void {
