@@ -7,7 +7,7 @@ import {
   hasConfigOrEntityChanged,
   LovelaceCardEditor,
   getLovelace,
-} from 'custom-card-helpers'; 
+} from './ha-helpers'; 
 import './component/ClimateModeButton'
 import './component/ClimateDisplay'
 import './editor';

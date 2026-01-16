@@ -1,4 +1,4 @@
-import { HomeAssistant } from 'custom-card-helpers';
+import { HomeAssistant } from '../ha-helpers';
 import type { HassEntity } from 'home-assistant-js-websocket';
 import CardConfig from './CardConfig';
 

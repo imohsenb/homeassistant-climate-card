@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { LitElement, css, html, type CSSResult, type TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { HomeAssistant, fireEvent, LovelaceCardEditor, ActionConfig } from 'custom-card-helpers';
+import { HomeAssistant, fireEvent, LovelaceCardEditor, ActionConfig } from './ha-helpers';
 
 import { ClimateCardConfig } from './types';
 
