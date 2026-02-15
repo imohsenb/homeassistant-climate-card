@@ -110,6 +110,15 @@ class Picker extends LitElement {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2,
     };
+
+    // Helper to extract coordinates from mouse or touch events
+    const getEventCoordinates = (event: Event) => {
+      if ('touches' in event && (event as TouchEvent).touches.length > 0) {
+        return { x: (event as TouchEvent).touches[0].pageX, y: (event as TouchEvent).touches[0].pageY };
+      }
+      return { x: (event as MouseEvent).pageX, y: (event as MouseEvent).pageY };
+    };
+
     const transform = (function() {
       const prefs = ['t', 'WebkitT', 'MozT', 'msT', 'OT'],
         style = document.documentElement.style;
@@ -128,35 +137,44 @@ class Picker extends LitElement {
       return angle;
     };
     // DRAG
-    const mousemove = (event) => {
-      const deg = rotate(event.pageX, event.pageY);
+    const handleMove = (event: Event) => {
+      const coords = getEventCoordinates(event);
+      const deg = rotate(coords.x, coords.y);
       if (deg > 45 && deg < 150) return;
       this.setPickerAngle(deg);
     };
     // DRAGEND
-    const mouseup = () => {
-      document.removeEventListener('mouseup', mouseup);
-      document.removeEventListener('mousemove', mousemove);
+    const handleEnd = () => {
+      document.removeEventListener('mouseup', handleEnd);
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('touchend', handleEnd);
+      document.removeEventListener('touchmove', handleMove);
       this.picker?.setAttribute('class', '');
       this.updateTimer = setTimeout(()=>this.updateDeviceTargetTemp(), 1000);
     };
 
     // DRAGSTART
-    const mousedown = (event) => {
+    const handleStart = (event: Event) => {
       event.preventDefault();
-      document.addEventListener('mousemove', mousemove);
-      document.addEventListener('mouseup', mouseup);
+      document.addEventListener('mousemove', handleMove);
+      document.addEventListener('mouseup', handleEnd);
+      document.addEventListener('touchmove', handleMove, { passive: false });
+      document.addEventListener('touchend', handleEnd);
       this.picker?.setAttribute('class', 'active');
       if (this.updateTimer != null) clearTimeout(this.updateTimer);
     };
 
-    // DRAG START
-    pickerCircle.addEventListener('mousedown', mousedown);
+    // DRAG START - both mouse and touch
+    pickerCircle.addEventListener('mousedown', handleStart);
+    pickerCircle.addEventListener('touchstart', handleStart, { passive: false });
 
     // ENABLE STARTING THE DRAG IN THE BLACK CIRCLE
     circle.addEventListener('mousedown', function(event) {
-      if (event.target == pickerCircle) mousedown(event);
+      if (event.target == pickerCircle) handleStart(event);
     });
+    circle.addEventListener('touchstart', function(event) {
+      if (event.target == pickerCircle) handleStart(event);
+    }, { passive: false });
   }
 
 
